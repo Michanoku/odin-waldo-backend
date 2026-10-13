@@ -11,3 +11,35 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Image {
+  id         String      @id @default(cuid())
+  username   String      @unique
+  email      String      @unique
+  hash       String
+  createdAt  DateTime    @default(now())
+  author     Boolean     @default(false)
+  characters Character[] @relation("Characters")
+  records    Record[]    @relation("Records")
+}
+
+model Character {
+  id      String  @id @default(cuid())
+  name    String
+  xStart  Int
+  xEnd    Int
+  yStart  Int
+  yEnd    Int
+  mobile  Boolean
+  imageId String
+  image   Image   @relation("Characters", fields: [imageId], references: [id])
+}
+
+model Record {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  userName  String
+  time      Int
+  imageId   String
+  image     Image    @relation("Records", fields: [imageId], references: [id])
+}
