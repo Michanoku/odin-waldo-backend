@@ -3,8 +3,8 @@ import "./config/env.js";
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-
-//import routes from "./routes.js";
+import path from "node:path";
+import routes from "./routes.js";
 
 const app = express();
 
@@ -12,6 +12,7 @@ if (process.env.NODE_ENV !== "test") {
   app.use(morgan("dev"));
 }
 
+app.use("/assets", express.static(path.join(process.cwd(), "public")));
 app.use(express.json());
 
 app.use(
@@ -23,7 +24,7 @@ app.use(
 );
 
 // Routes
-//app.use("/", routes);
+app.use("/", routes);
 
 app.use((req, res) => {
   res.status(404).json({

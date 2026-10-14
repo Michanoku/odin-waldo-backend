@@ -15,6 +15,11 @@ router.post(
 );
 
 router.get(
+  "/images",
+  controller.getImages,
+)
+
+router.get(
   "/records",
   controller.getRecords,
 )
