@@ -66,18 +66,107 @@ const startGame = [
     }
     // Get the validated data and the mobile flag
     const { imageId, userName } = matchedData(req);
-    const mobile = req.body.mobile === "true";
+    const mobile = req.body.mobile;
+    const characters = db.getGameCharacters(imageId, mobile);
     // Sign the token and return it to the user
     const token = signJWT(imageId, mobile, userName);
     return res.status(200).json({
-        token,
+      token,
+      characters,
+      message: "started",
     });
   },
 ];
 
-const tagCharacter = (req, res, next) => {
-  // Code here
+// Check if the coordinate is within range
+const validateCoordinates = (coord, start, end) => {
+  return start <= coord && end >= coord;
 };
+
+// Check if the game is over
+const checkGameOver = async (updatedToken) => {
+  // first get a list of all characters for that image and orientation
+  const characters = await db.getAllCharacters(
+    updatedToken.imageId,
+    updatedToken.mobile,
+  );
+  const characterIds = characters.map((character) => character.id);
+  // If all character ids are also found in the progress array, the game is over
+  return characterIds.every((id) => updatedToken.progress.includes(id));
+};
+
+// Convert the milliseconds into a readable format
+const getReadableTime = (rawTime) => {
+  const minutes = Math.floor(rawTime / 60000);
+  const seconds = Math.floor((rawTime % 60000) / 1000);
+  const milliseconds = rawTime % 1000;
+  return `${minutes}:${String(seconds).padStart(2, "0")}:${String(milliseconds).padStart(3, "0")}`;
+};
+
+// When the player tries to tag a character
+const tagCharacter = [
+  validateTag,
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+      });
+    }
+    // Get the validated data and the mobile flag
+    const { xCoord, yCoord, characterId } = matchedData(req);
+
+    // Get the character from the db and check if the coordinates are valid
+    const character = await db.getCharacter(characterId, req.gameToken.imageId);
+    if (!character) {
+      return res.status(404).json({
+        message: "Character not found for this image.",
+      });
+    }
+    // If both coordinates are within the valid region
+    if (
+      validateCoordinates(xCoord, character.xStart, character.xEnd) &&
+      validateCoordinates(yCoord, character.yStart, character.yEnd)
+    ) {
+      // USER scored a hit
+      // Create an updated token
+      const updatedToken = {
+        ...req.gameToken,
+        progress: [...req.gameToken.progress, characterId],
+      };
+      // Check if game is over
+      const gameOver = await checkGameOver(updatedToken);
+      if (gameOver) {
+        // Get the time elapsed from the startedAt value and now.
+        const rawTime = Date.now() - updatedToken.startedAt;
+        // Calculate minutes, seconds and milliseconds to show
+        const time = getReadableTime(rawTime);
+        // Enter the record into the database
+        await db.enterRecord(
+          updatedToken.imageId,
+          updatedToken.userName,
+          rawTime,
+        );
+        return res.status(200).json({
+          time,
+          message: "gameover",
+        });
+      }
+      // The game is not yet over, send the updated token
+      const token = updateJWT(updatedToken);
+      return res.status(200).json({
+        token,
+        message: "correct",
+      });
+    }
+    // USER missed, update token to get refresh on expiry
+    const token = updateJWT(req.gameToken);
+    return res.status(200).json({
+      token,
+      message: "incorrect",
+    });
+  },
+];
 
 const getImages = (req, res, next) => {
   // Code here
