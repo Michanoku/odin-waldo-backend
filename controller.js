@@ -1,10 +1,10 @@
-import { signJWT } from "./lib/token.js";
+import { signJWT, updateJWT } from "./lib/token.js";
 import { body, validationResult, matchedData } from "express-validator";
 import * as db from "./db.js";
 
 // Validation for user registration, all fields are required
 const validateGameStart = [
-  body("username")
+  body("userName")
     .trim()
     .notEmpty()
     .withMessage("Username is required.")
@@ -16,10 +16,10 @@ const validateGameStart = [
     .notEmpty()
     .withMessage("Select an image from the menu.")
     .bail()
-    .custom((value) => {
+    .custom(async (value) => {
       // Password must match confirmation
       try {
-        const image = db.getImage(value);
+        const image = await db.getImage(value);
         if (image) return true;
       } catch (error) {
         throw new Error("Select a valid image from the menu.");
@@ -27,11 +27,37 @@ const validateGameStart = [
     }),
 ];
 
+const validateTag = [
+  body("xCoord")
+    .trim()
+    .notEmpty()
+    .withMessage("All coordinates required.")
+    .bail()
+    .isInt()
+    .withMessage("Coordinates must be integers.")
+    .bail()
+    .toInt(),
+  body("yCoord")
+    .trim()
+    .notEmpty()
+    .withMessage("All coordinates required.")
+    .bail()
+    .isInt()
+    .withMessage("Coordinates must be integers.")
+    .bail()
+    .toInt(),
+  body("characterId")
+    .trim()
+    .notEmpty()
+    .withMessage("Select a character from the menu.")
+    .bail(),
+];
+
 // When the user wants to start the game
 const startGame = [
   // Make sure the username and imageId are valid.
   validateGameStart,
-  async (req, res, next) => {
+  async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
       return res.status(400).json({
