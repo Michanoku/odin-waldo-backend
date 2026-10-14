@@ -1,3 +1,5 @@
+import { signJWT } from "./lib/token.js";
+
 const startGame = (req, res, next) => {
   // Code here
 };

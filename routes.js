@@ -1,8 +1,8 @@
 import express from "express";
 import * as controller from "./controller.js" ;
+import { readJWT } from "./lib/token.js";
 
 const router = express.Router();
-
 
 router.post(
   "/start",
@@ -11,6 +11,7 @@ router.post(
 
 router.post(
   "/tag",
+  readJWT,
   controller.tagCharacter,
 );
 
