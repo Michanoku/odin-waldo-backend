@@ -16,7 +16,7 @@ router.post(
 );
 
 router.get(
-  "/images",
+  "/images/:device",
   controller.getImages,
 )
 

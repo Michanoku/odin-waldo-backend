@@ -13,14 +13,13 @@ datasource db {
 }
 
 model Image {
-  id         String      @id @default(cuid())
-  username   String      @unique
-  email      String      @unique
-  hash       String
-  createdAt  DateTime    @default(now())
-  author     Boolean     @default(false)
-  characters Character[] @relation("Characters")
-  records    Record[]    @relation("Records")
+  id              String      @id @default(cuid())
+  desktopUrl      String
+  mobileUrl       String
+  desktopThumbUrl String
+  mobileThumbUrl  String
+  characters      Character[] @relation("Characters")
+  records         Record[]    @relation("Records")
 }
 
 model Character {

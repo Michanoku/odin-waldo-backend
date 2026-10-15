@@ -2,7 +2,7 @@ import { signJWT, updateJWT } from "./lib/token.js";
 import { body, validationResult, matchedData } from "express-validator";
 import * as db from "./db.js";
 
-// Validation for user registration, all fields are required
+// Validation for game start
 const validateGameStart = [
   body("userName")
     .trim()
@@ -17,7 +17,7 @@ const validateGameStart = [
     .withMessage("Select an image from the menu.")
     .bail()
     .custom(async (value) => {
-      // Password must match confirmation
+      // The selected image must be valid
       try {
         const image = await db.getImage(value);
         if (image) return true;
@@ -27,7 +27,9 @@ const validateGameStart = [
     }),
 ];
 
+// Validate the users move
 const validateTag = [
+  // Both x and y coordinates must be provided
   body("xCoord")
     .trim()
     .notEmpty()
@@ -46,6 +48,7 @@ const validateTag = [
     .withMessage("Coordinates must be integers.")
     .bail()
     .toInt(),
+  // The character id for the character the user picked must be provided
   body("characterId")
     .trim()
     .notEmpty()
@@ -168,8 +171,15 @@ const tagCharacter = [
   },
 ];
 
-const getImages = (req, res, next) => {
-  // Code here
+// Transfer all the different images the user can choose from
+const getImages = async (req, res) => {
+  // Get the correct images based on the users device
+  const mobile = req.params.device === "mobile";
+  const images = await db.getImageThumbnails(mobile);
+
+  return res.status(200).json({
+    images,
+  });
 };
 
 const getRecords = (req, res, next) => {
