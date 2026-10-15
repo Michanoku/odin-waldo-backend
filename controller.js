@@ -175,15 +175,21 @@ const tagCharacter = [
 const getImages = async (req, res) => {
   // Get the correct images based on the users device
   const mobile = req.params.device === "mobile";
-  const images = await db.getImageThumbnails(mobile);
+  const images = await db.getImageData(mobile);
 
   return res.status(200).json({
     images,
   });
 };
 
-const getRecords = (req, res, next) => {
-  // Code here
+const getRecords = async (req, res) => {
+  // Get the top 10 for the image
+  const imageId = req.params.imageId;
+  const records = await db.getRecords(imageId);
+
+  return res.status(200).json({
+    records,
+  })
 };
 
 export { startGame, tagCharacter, getImages, getRecords };

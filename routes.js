@@ -20,9 +20,4 @@ router.get(
   controller.getImages,
 )
 
-router.get(
-  "/records",
-  controller.getRecords,
-)
-
 export default router;

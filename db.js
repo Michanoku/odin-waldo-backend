@@ -4,24 +4,22 @@ import { prisma } from "./lib/prisma.js";
 const getImage = async (id) => {
   return prisma.image.findUnique({
     where: { id },
-    include: {
+  });
+};
+
+const getImageData = async (mobile) => {
+  const device = mobile ? "Mobile" : "Desktop";
+  return prisma.image.findMany({
+    select: {
+      id: true,
+      [`${device}Url`]: true,
+      [`${device}ThumbUrl`]: true,
       records: {
         orderBy: {
           time: "asc",
         },
         take: 10,
       },
-    },
-  });
-};
-
-const getImageThumbnails = async (mobile) => {
-  const device = mobile ? "Mobile" : "Desktop";
-  return prisma.image.findMany({
-    select: {
-      id,
-      [`${device}Url`]: true,
-      [`${device}ThumbUrl`]: true,
     },
   });
 };
@@ -56,11 +54,12 @@ const createRecord = async (imageId, userName, time) => {
   });
 };
 
+
 export {
   getImage,
+  getImageData,
   getAllCharacters,
   getGameCharacters,
   getCharacter,
   createRecord,
-  getImageThumbnails,
 };
