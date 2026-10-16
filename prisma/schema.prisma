@@ -13,25 +13,24 @@ datasource db {
 }
 
 model Image {
-  id              String      @id @default(cuid())
-  desktopUrl      String
-  mobileUrl       String
-  desktopThumbUrl String
-  mobileThumbUrl  String
-  characters      Character[] @relation("Characters")
-  records         Record[]    @relation("Records")
+  id         String      @id @default(cuid())
+  name       String
+  imageUrl   String
+  thumbUrl   String
+  characters Character[] @relation("Characters")
+  records    Record[]    @relation("Records")
 }
 
 model Character {
-  id      String  @id @default(cuid())
-  name    String
-  xStart  Int
-  xEnd    Int
-  yStart  Int
-  yEnd    Int
-  mobile  Boolean
-  imageId String
-  image   Image   @relation("Characters", fields: [imageId], references: [id])
+  id       String @id @default(cuid())
+  name     String
+  imageUrl String
+  xStart   Int
+  xEnd     Int
+  yStart   Int
+  yEnd     Int
+  imageId  String
+  image    Image  @relation("Characters", fields: [imageId], references: [id])
 }
 
 model Record {

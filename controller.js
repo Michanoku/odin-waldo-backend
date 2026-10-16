@@ -182,14 +182,4 @@ const getImages = async (req, res) => {
   });
 };
 
-const getRecords = async (req, res) => {
-  // Get the top 10 for the image
-  const imageId = req.params.imageId;
-  const records = await db.getRecords(imageId);
-
-  return res.status(200).json({
-    records,
-  })
-};
-
-export { startGame, tagCharacter, getImages, getRecords };
+export { startGame, tagCharacter, getImages };
