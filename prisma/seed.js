@@ -1,5 +1,7 @@
-import "../config/env.js";
+import "dotenv/config"
 import { prisma } from "../lib/prisma.js";
+
+
 
 async function main() {
   // Clear existing data
@@ -76,6 +78,7 @@ async function main() {
       });
     }
   }
+  console.log("Database seeded succesfully.")
 }
 
 main()
