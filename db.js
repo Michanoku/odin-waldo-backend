@@ -7,13 +7,12 @@ const getImage = async (id) => {
   });
 };
 
-const getImageData = async (mobile) => {
-  const device = mobile ? "Mobile" : "Desktop";
+const getImageData = async () => {
   return prisma.image.findMany({
     select: {
       id: true,
-      [`${device}Url`]: true,
-      [`${device}ThumbUrl`]: true,
+      imageUrl: true,
+      thumbUrl: true,
       records: {
         orderBy: {
           time: "asc",
@@ -24,16 +23,16 @@ const getImageData = async (mobile) => {
   });
 };
 
-const getAllCharacters = async (imageId, mobile) => {
+const getAllCharacters = async (imageId) => {
   return prisma.character.findMany({
-    where: { imageId, mobile },
+    where: { imageId },
     select: { id: true },
   });
 };
 
-const getGameCharacters = async (imageId, mobile) => {
+const getGameCharacters = async (imageId) => {
   return prisma.character.findMany({
-    where: { imageId, mobile },
+    where: { imageId },
     select: { id: true, name: true },
   });
 };

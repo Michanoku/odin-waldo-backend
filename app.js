@@ -11,7 +11,7 @@ if (process.env.NODE_ENV !== "test") {
   app.use(morgan("dev"));
 }
 
-app.use(express.static(path.join(process.cwd(), "public")));
+app.use("/assets", express.static(path.join(process.cwd(), "public")));
 app.use(express.json());
 
 app.use(

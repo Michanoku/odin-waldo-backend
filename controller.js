@@ -18,12 +18,13 @@ const validateGameStart = [
     .bail()
     .custom(async (value) => {
       // The selected image must be valid
-      try {
-        const image = await db.getImage(value);
-        if (image) return true;
-      } catch (error) {
+      const image = await db.getImage(value);
+
+      if (!image) {
         throw new Error("Select a valid image from the menu.");
       }
+
+      return true;
     }),
 ];
 
@@ -67,12 +68,11 @@ const startGame = [
         errors: errors.array(),
       });
     }
-    // Get the validated data and the mobile flag
+    // Get the validated data
     const { imageId, userName } = matchedData(req);
-    const mobile = req.body.mobile;
-    const characters = db.getGameCharacters(imageId, mobile);
+    const characters = await db.getGameCharacters(imageId);
     // Sign the token and return it to the user
-    const token = signJWT(imageId, mobile, userName);
+    const token = signJWT(imageId, userName);
     return res.status(200).json({
       token,
       characters,
@@ -91,7 +91,6 @@ const checkGameOver = async (updatedToken) => {
   // first get a list of all characters for that image and orientation
   const characters = await db.getAllCharacters(
     updatedToken.imageId,
-    updatedToken.mobile,
   );
   const characterIds = characters.map((character) => character.id);
   // If all character ids are also found in the progress array, the game is over
@@ -116,7 +115,7 @@ const tagCharacter = [
         errors: errors.array(),
       });
     }
-    // Get the validated data and the mobile flag
+    // Get the validated data
     const { xCoord, yCoord, characterId } = matchedData(req);
 
     // Get the character from the db and check if the coordinates are valid
@@ -174,12 +173,8 @@ const tagCharacter = [
 // Transfer all the different images the user can choose from
 const getImages = async (req, res) => {
   // Get the correct images based on the users device
-  const mobile = req.params.device === "mobile";
-  const images = await db.getImageData(mobile);
-
-  return res.status(200).json({
-    images,
-  });
+  const images = await db.getImageData();
+  return res.status(200).json(images);
 };
 
 export { startGame, tagCharacter, getImages };

@@ -3,7 +3,7 @@ import { prisma } from "../lib/prisma.js";
 
 
 
-async function main() {
+export async function main() {
   // Clear existing data
   await prisma.character.deleteMany();
   await prisma.image.deleteMany();
@@ -59,8 +59,8 @@ async function main() {
     const sceneObject = await prisma.image.create({
       data: {
         name: scene.name,
-        imageUrl: `/images/${scene.id}.webp`,
-        thumbUrl: `/images/${scene.id}_thumb.webp`,
+        imageUrl: `/assets/images/${scene.id}.webp`,
+        thumbUrl: `/assets/images/${scene.id}_thumb.webp`,
       },
     });
 
@@ -68,7 +68,7 @@ async function main() {
       await prisma.character.create({
         data: {
           name: character.name,
-          imageUrl: `/images/${scene.id}_${id}.webp`,
+          imageUrl: `/assets/images/${scene.id}_${id}.webp`,
           xStart: character.xCoord,
           xEnd: character.xCoord + 70,
           yStart: character.yCoord,
@@ -80,12 +80,3 @@ async function main() {
   }
   console.log("Database seeded succesfully.")
 }
-
-main()
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
