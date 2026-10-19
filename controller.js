@@ -121,7 +121,7 @@ const tagCharacter = [
     // Get the character from the db and check if the coordinates are valid
     const character = await db.getCharacter(characterId, req.gameToken.imageId);
     if (!character) {
-      return res.status(404).json({
+      return res.status(400).json({
         message: "Character not found for this image.",
       });
     }
@@ -143,8 +143,8 @@ const tagCharacter = [
         const rawTime = Date.now() - updatedToken.startedAt;
         // Calculate minutes, seconds and milliseconds to show
         const time = getReadableTime(rawTime);
-        // Enter the record into the database
-        await db.enterRecord(
+        // Create the record in the database
+        await db.createRecord(
           updatedToken.imageId,
           updatedToken.userName,
           rawTime,
