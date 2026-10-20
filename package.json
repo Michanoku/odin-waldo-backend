@@ -19,6 +19,7 @@
     "start": "node server.js",
     "lint": "eslint .",
     "test": "NODE_ENV=test npx prisma db push && node --experimental-vm-modules node_modules/jest/bin/jest.js --detectOpenHandles",
+    "db:seed": "npm prisma/seed.js",
     "db:init": "prisma migrate dev --name init",
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
