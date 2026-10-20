@@ -89,9 +89,7 @@ const validateCoordinates = (coord, start, end) => {
 // Check if the game is over
 const checkGameOver = async (updatedToken) => {
   // first get a list of all characters for that image and orientation
-  const characters = await db.getAllCharacters(
-    updatedToken.imageId,
-  );
+  const characters = await db.getAllCharacters(updatedToken.imageId);
   const characterIds = characters.map((character) => character.id);
   // If all character ids are also found in the progress array, the game is over
   return characterIds.every((id) => updatedToken.progress.includes(id));
@@ -172,7 +170,7 @@ const tagCharacter = [
 
 // Transfer all the different images the user can choose from
 const getImages = async (req, res) => {
-  // Get the correct images based on the users device
+  // Get the image
   const images = await db.getImageData();
   return res.status(200).json(images);
 };

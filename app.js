@@ -7,13 +7,17 @@ import routes from "./routes.js";
 
 const app = express();
 
+// If we are testing, don't use morgan
 if (process.env.NODE_ENV !== "test") {
   app.use(morgan("dev"));
 }
 
+// Add public assets folder so images can be loaded by the frontend
 app.use("/assets", express.static(path.join(process.cwd(), "public")));
+// Add json
 app.use(express.json());
 
+// Allow the frontend to access the urls
 app.use(
   cors({
     origin: [
@@ -25,6 +29,7 @@ app.use(
 // Routes
 app.use("/", routes);
 
+// 404 handler
 app.use((req, res) => {
   res.status(404).json({
     error: 404,

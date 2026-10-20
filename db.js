@@ -7,6 +7,7 @@ const getImage = async (id) => {
   });
 };
 
+// Get all image data to use in the frontend for image selection
 const getImageData = async () => {
   return prisma.image.findMany({
     select: {
@@ -23,6 +24,7 @@ const getImageData = async () => {
   });
 };
 
+// Get all character ids for a particular image id
 const getAllCharacters = async (imageId) => {
   return prisma.character.findMany({
     where: { imageId },
@@ -30,6 +32,7 @@ const getAllCharacters = async (imageId) => {
   });
 };
 
+// Get the characters with names and ids for an image
 const getGameCharacters = async (imageId) => {
   return prisma.character.findMany({
     where: { imageId },
@@ -37,12 +40,14 @@ const getGameCharacters = async (imageId) => {
   });
 };
 
+// Get a character based on image id and id
 const getCharacter = async (id, imageId) => {
   return prisma.character.findUnique({
     where: { id, imageId },
   });
 };
 
+// Create a new user record (a time record of solving the image)
 const createRecord = async (imageId, userName, time) => {
   return prisma.record.create({
     data: {
@@ -52,7 +57,6 @@ const createRecord = async (imageId, userName, time) => {
     },
   });
 };
-
 
 export {
   getImage,

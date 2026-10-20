@@ -1,13 +1,12 @@
 import "dotenv/config"
 import { prisma } from "../lib/prisma.js";
 
-
-
 export async function main() {
   // Clear existing data
   await prisma.character.deleteMany();
   await prisma.image.deleteMany();
 
+  // Add 4 scenes with 5 characters each
   const scenes = [
     {
       id: "01",
@@ -55,6 +54,7 @@ export async function main() {
     },
   ];
 
+  // Create the database entries for images and characters
   for (const scene of scenes) {
     const sceneObject = await prisma.image.create({
       data: {
