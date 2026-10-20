@@ -67,6 +67,14 @@ const getRandomCorrectCoordinates = (images, imageId, characterId) => {
   return { x, y };
 };
 
+// Convert the milliseconds into a readable format
+const getReadableTime = (rawTime) => {
+  const minutes = Math.floor(rawTime / 60000);
+  const seconds = Math.floor((rawTime % 60000) / 1000);
+  const milliseconds = rawTime % 1000;
+  return `${minutes}:${String(seconds).padStart(2, "0")}:${String(milliseconds).padStart(3, "0")}`;
+};
+
 describe("Receiving game information", () => {
   test("can get the available images (games)", async () => {
     // Get the available images
@@ -409,12 +417,14 @@ describe("Tagging characters", () => {
 });
 
 describe("Winning the game", () => {
+  // Get a random image number
+  let image = randomImage();
+  let time;
+
   test("Player can win the game", async () => {
     // Get the available images
     const imageResponse = await request(app).get("/images");
     const images = imageResponse.body;
-    // Get a random image number
-    const image = randomImage();
     // Pick a random image ig from the number
     const imageId = images[image].id;
 
@@ -457,11 +467,19 @@ describe("Winning the game", () => {
         token = response.body.token;
       }
     }
-
+    time = responses[4].body.time;
     expect(responses[4].statusCode).toBe(200);
     expect(responses[4].body.message).toBe("gameover");
-    expect(responses[4].body.time).toMatch(/^\d+:\d{2}:\d{3}$/);
+    expect(time).toMatch(/^\d+:\d{2}:\d{3}$/);
+  });
+
+  test("Record is correctly recorded", async () => {
+    // Get image data
+    const imageResponse = await request(app).get("/images");
+    const images = imageResponse.body;
+
+    // Get time and convert it (as its in milliseconds)
+    const recordTime = getReadableTime(images[image].records[0].time);
+    expect(recordTime).toBe(time);
   });
 });
-
-// TODO test if record was created succesfully!
