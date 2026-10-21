@@ -4,11 +4,7 @@ import { prisma } from "../lib/prisma.js";
 import { main } from "../prisma/seed.js";
 
 beforeAll(async () => {
-  // Delete all current test database records
-  await prisma.record.deleteMany();
-  await prisma.character.deleteMany();
-  await prisma.image.deleteMany();
-  // Seed the test database
+  // Seed the test database (all data is erased)
   await main();
 });
 

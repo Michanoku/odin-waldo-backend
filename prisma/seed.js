@@ -3,6 +3,7 @@ import { prisma } from "../lib/prisma.js";
 
 export async function main() {
   // Clear existing data
+  await prisma.record.deleteMany();
   await prisma.character.deleteMany();
   await prisma.image.deleteMany();
 
