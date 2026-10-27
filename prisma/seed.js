@@ -60,8 +60,8 @@ export async function main() {
     const sceneObject = await prisma.image.create({
       data: {
         name: scene.name,
-        imageUrl: `/assets/images/${scene.id}.webp`,
-        thumbUrl: `/assets/images/${scene.id}_thumb.webp`,
+        imageUrl: `assets/images/${scene.id}.webp`,
+        thumbUrl: `assets/images/${scene.id}_thumb.webp`,
       },
     });
 
@@ -69,7 +69,7 @@ export async function main() {
       await prisma.character.create({
         data: {
           name: character.name,
-          imageUrl: `/assets/images/${scene.id}_${id}.webp`,
+          imageUrl: `assets/images/${scene.id}_${id}.webp`,
           xStart: character.xCoord,
           xEnd: character.xCoord + 70,
           yStart: character.yCoord,
