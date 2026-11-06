@@ -37,7 +37,7 @@ const getAllCharacters = async (imageId) => {
 const getGameCharacters = async (imageId) => {
   return prisma.character.findMany({
     where: { imageId },
-    select: { id: true, name: true },
+    select: { id: true, name: true, imageUrl: true },
   });
 };
 
