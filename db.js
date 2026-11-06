@@ -12,6 +12,7 @@ const getImageData = async () => {
   return prisma.image.findMany({
     select: {
       id: true,
+      name: true,
       imageUrl: true,
       thumbUrl: true,
       records: {
