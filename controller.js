@@ -36,8 +36,8 @@ const validateTag = [
     .notEmpty()
     .withMessage("All coordinates required.")
     .bail()
-    .isInt()
-    .withMessage("Coordinates must be integers.")
+    .isFloat()
+    .withMessage("Coordinates must be numbers.")
     .bail()
     .toInt(),
   body("yCoord")
@@ -45,8 +45,8 @@ const validateTag = [
     .notEmpty()
     .withMessage("All coordinates required.")
     .bail()
-    .isInt()
-    .withMessage("Coordinates must be integers.")
+    .isFloat()
+    .withMessage("Coordinates must be numbers.")
     .bail()
     .toInt(),
   // The character id for the character the user picked must be provided
