@@ -142,13 +142,14 @@ const tagCharacter = [
         // Calculate minutes, seconds and milliseconds to show
         const time = getReadableTime(rawTime);
         // Create the record in the database
-        await db.createRecord(
+        const rank = await db.createRecord(
           updatedToken.imageId,
           updatedToken.userName,
           rawTime,
         );
         return res.status(200).json({
           time,
+          rank,
           message: "gameover",
         });
       }
@@ -172,7 +173,14 @@ const tagCharacter = [
 const getImages = async (req, res) => {
   // Get the image
   const images = await db.getImageData();
-  return res.status(200).json(images);
+  const imagesReadableTime = images.map((image) => ({
+    ...image,
+    records: image.records.map((record) => ({
+      ...record,
+      time: getReadableTime(record.time),
+    })),
+  }));
+  return res.status(200).json(imagesReadableTime);
 };
 
 export { startGame, tagCharacter, getImages };

@@ -66,7 +66,7 @@ const createRecord = async (imageId, userName, time) => {
     },
   });
 
-  return { record, rank: rank + 1 };
+  return rank + 1;
 };
 
 export {
