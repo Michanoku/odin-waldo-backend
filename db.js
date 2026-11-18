@@ -50,13 +50,23 @@ const getCharacter = async (id, imageId) => {
 
 // Create a new user record (a time record of solving the image)
 const createRecord = async (imageId, userName, time) => {
-  return prisma.record.create({
+  const record = await prisma.record.create({
     data: {
       imageId,
       userName,
       time,
     },
   });
+  const rank = await prisma.record.count({
+    where: {
+      imageId,
+      time: {
+        lt: record.time,
+      },
+    },
+  });
+
+  return { record, rank: rank + 1 };
 };
 
 export {
