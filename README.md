@@ -187,6 +187,7 @@ Coordinates must be integers. They should use the same coordinate system as the 
 ```json
 {
   "time": "0:42:137",
+  "rank": 3,
   "message": "gameover"
 }
 ```
