@@ -227,7 +227,7 @@ describe("Tagging characters", () => {
     expect(response.body.errors[0].msg).toBe("All coordinates required.");
   });
 
-  test("x coordinate must be integer", async () => {
+  test("x coordinate must be number", async () => {
     // Get the available images
     const imageResponse = await request(app).get("/images");
     const images = imageResponse.body;
@@ -251,9 +251,9 @@ describe("Tagging characters", () => {
       .set("Authorization", `Bearer ${token}`);
 
     expect(response.statusCode).toBe(400);
-    expect(response.body.errors[0].msg).toBe("Coordinates must be integers.");
+    expect(response.body.errors[0].msg).toBe("Coordinates must be numbers.");
   });
-  test("y coordinate must be integer", async () => {
+  test("y coordinate must be a number", async () => {
     // Get the available images
     const imageResponse = await request(app).get("/images");
     const images = imageResponse.body;
@@ -277,7 +277,7 @@ describe("Tagging characters", () => {
       .set("Authorization", `Bearer ${token}`);
 
     expect(response.statusCode).toBe(400);
-    expect(response.body.errors[0].msg).toBe("Coordinates must be integers.");
+    expect(response.body.errors[0].msg).toBe("Coordinates must be numbers.");
   });
   test("character id must be provided", async () => {
     // Get the available images
@@ -477,9 +477,6 @@ describe("Winning the game", () => {
     // Get image data
     const imageResponse = await request(app).get("/images");
     const images = imageResponse.body;
-
-    // Get time and convert it (as its in milliseconds)
-    const recordTime = getReadableTime(images[image].records[0].time);
-    expect(recordTime).toBe(time);
+    expect(images[image].records[0].time).toBe(time);
   });
 });
